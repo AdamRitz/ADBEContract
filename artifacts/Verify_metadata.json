@@ -1,0 +1,238 @@
+{
+	"compiler": {
+		"version": "0.8.31+commit.fd3a2265"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [
+					{
+						"internalType": "bytes[]",
+						"name": "g1s",
+						"type": "bytes[]"
+					},
+					{
+						"internalType": "bytes[]",
+						"name": "g2s",
+						"type": "bytes[]"
+					}
+				],
+				"name": "Check",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bytes",
+						"name": "p1",
+						"type": "bytes"
+					},
+					{
+						"internalType": "bytes",
+						"name": "p2",
+						"type": "bytes"
+					}
+				],
+				"name": "G1Add",
+				"outputs": [
+					{
+						"internalType": "bytes",
+						"name": "point",
+						"type": "bytes"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bytes",
+						"name": "p1",
+						"type": "bytes"
+					},
+					{
+						"internalType": "uint256",
+						"name": "scalar",
+						"type": "uint256"
+					}
+				],
+				"name": "G1Mul",
+				"outputs": [
+					{
+						"internalType": "bytes",
+						"name": "point",
+						"type": "bytes"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bytes",
+						"name": "d",
+						"type": "bytes"
+					}
+				],
+				"name": "G1Muls",
+				"outputs": [
+					{
+						"internalType": "bytes",
+						"name": "point",
+						"type": "bytes"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bytes",
+						"name": "p1",
+						"type": "bytes"
+					},
+					{
+						"internalType": "bytes",
+						"name": "p2",
+						"type": "bytes"
+					}
+				],
+				"name": "G2Add",
+				"outputs": [
+					{
+						"internalType": "bytes",
+						"name": "point",
+						"type": "bytes"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bytes",
+						"name": "p1",
+						"type": "bytes"
+					},
+					{
+						"internalType": "uint256",
+						"name": "scalar",
+						"type": "uint256"
+					}
+				],
+				"name": "G2Mul",
+				"outputs": [
+					{
+						"internalType": "bytes",
+						"name": "point",
+						"type": "bytes"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bytes",
+						"name": "d",
+						"type": "bytes"
+					}
+				],
+				"name": "G2Muls",
+				"outputs": [
+					{
+						"internalType": "bytes",
+						"name": "point",
+						"type": "bytes"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bytes",
+						"name": "p1",
+						"type": "bytes"
+					},
+					{
+						"internalType": "bytes",
+						"name": "p2",
+						"type": "bytes"
+					},
+					{
+						"internalType": "bytes",
+						"name": "p3",
+						"type": "bytes"
+					},
+					{
+						"internalType": "bytes",
+						"name": "p4",
+						"type": "bytes"
+					}
+				],
+				"name": "Pairing",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"Verfiy.sol": "Verify"
+		},
+		"evmVersion": "osaka",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": true,
+			"runs": 200
+		},
+		"remappings": [],
+		"viaIR": true
+	},
+	"sources": {
+		"Verfiy.sol": {
+			"keccak256": "0x44a394d26652bcd3d2e97e1f599f954abbe46e47c66d1977a62e594751d062e6",
+			"urls": [
+				"bzz-raw://93d82b13022758594f725159103f6b8f5e6124b5d4c9f476e28b65211c671a82",
+				"dweb:/ipfs/QmbohnMz5nZUbJwhksbXN7wwpDNdNrrEtDYpbbfncpCAt6"
+			]
+		}
+	},
+	"version": 1
+}
