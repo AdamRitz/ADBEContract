@@ -9,7 +9,7 @@ contract Verify {
         hex"0000000000000000000000000000000017f1d3a73197d7942695638c4fa9ac0fc3688c4f9774b905a14e3a3f171bac586c55e83ff97a1aeffb3af00adb22c6bb0000000000000000000000000000000008b3f481e3aaa0f1a09e30ed741d8ae4fcf5e095d5d00af600db18cb2c04b3edd03cc744a2888ae40caa232946c5e7e1";
     bytes constant g2 =
         hex"00000000000000000000000000000000024aa2b2f08f0a91260805272dc51051c6e47ad4fa403b02b4510b647ae3d1770bac0326a805bbefd48056c8c121bdb80000000000000000000000000000000013e02b6052719f607dacd3a088274f65596bd0d09920b61ab5da61bbdc7f5049334cf11213945d57e5ac7d055d042b7e000000000000000000000000000000000ce5d527727d6e118cc9cdc6da2e351aadfd9baa8cbdd3a76d429a695160d12c923ac9cc3baca289e193548608b82801000000000000000000000000000000000606c4a02ea734cc32acd2b02bc28b99cb3e287e85a763af267492ab572e99ab3f370d275cec1da1aaa9075ff05f79be";
-
+    
     function Check3(
         bytes[] calldata g1s,
         bytes[] calldata g2s
@@ -115,7 +115,7 @@ contract Verify {
 
         return EqualPairingCheck(part1, part2, part3, part4);
     }
-       function Check2(bytes[] calldata g1s, bytes[] calldata g2s) external  returns (bool) {
+    function Check2(bytes[] calldata g1s, bytes[] calldata g2s) external  returns (bool) {
     uint256 L1 = g1s.length;
     uint256 L2 = g2s.length;
     require(L1 > 0);
@@ -225,11 +225,23 @@ contract Verify {
         unchecked { ++i; }
     }
     bytes memory part4 = G2Muls(ag4);
-
-    return EqualPairingCheck(part1, part2, part3, part4);
+    require(EqualPairingCheck(part1, part2, part3, part4),"Check2 Failed");
+    require(EqualPairingCheck(g1,g2s[L1+1],g1s[1],g2s[L1-1]),"Check3 Failed");
+    return true;
 }
-
+ bool public  w=false;
 // ---- helpers: 只做 copy 和写标量，不改你 precompile 包装函数 ----
+function why1(bytes[] calldata g1s,bytes[] calldata g2s) public  {
+    uint256 L1=g1s.length;
+    w=EqualPairingCheck(g1,g2s[L1+1],g1s[1],g2s[L1-1]);
+}
+function why2(bytes[] calldata g1s,bytes[] calldata g2s) public  {
+
+    uint256 t=uint256(keccak256(abi.encode(g1s,g2s)))%q;
+    if (t!=0){
+        w=false;
+    }
+}
 function _cdCopy(
     bytes calldata src,
     uint256 srcOff,

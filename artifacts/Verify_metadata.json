@@ -261,6 +261,55 @@
 				"outputs": [],
 				"stateMutability": "view",
 				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "w",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bytes[]",
+						"name": "g1s",
+						"type": "bytes[]"
+					},
+					{
+						"internalType": "bytes[]",
+						"name": "g2s",
+						"type": "bytes[]"
+					}
+				],
+				"name": "why1",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bytes[]",
+						"name": "g1s",
+						"type": "bytes[]"
+					},
+					{
+						"internalType": "bytes[]",
+						"name": "g2s",
+						"type": "bytes[]"
+					}
+				],
+				"name": "why2",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
 			}
 		],
 		"devdoc": {
@@ -292,10 +341,10 @@
 	},
 	"sources": {
 		"Verfiy.sol": {
-			"keccak256": "0xed66a7ca2d560ed8d3fcb6ce0477bb7f23f2d448b70c904616e48283da49e18e",
+			"keccak256": "0xc4dfbda9043fdac3f3505339991c34774b3f89ece7cb94978e1e69adb59b0d8d",
 			"urls": [
-				"bzz-raw://cc5059230c19de914a5762e71360f6485cb1c0621978ba9c28c6314274b48629",
-				"dweb:/ipfs/QmdxVdNRaE675uHr1FwovGBiHc6tBUAP8Qsj4djiNZukHM"
+				"bzz-raw://ebe1a8eae6d5825160cde24d9f1082b0cebf01710bb81a83212e424543644be0",
+				"dweb:/ipfs/QmQt5NfssRch9VnAMBobEhcrkH5mLtn67kkDmKAvXUrzsc"
 			]
 		}
 	},
