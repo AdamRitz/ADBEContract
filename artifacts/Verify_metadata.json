@@ -18,7 +18,65 @@
 						"type": "bytes[]"
 					}
 				],
-				"name": "Check",
+				"name": "Check2",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bytes[]",
+						"name": "g1s",
+						"type": "bytes[]"
+					},
+					{
+						"internalType": "bytes[]",
+						"name": "g2s",
+						"type": "bytes[]"
+					}
+				],
+				"name": "Check3",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bytes",
+						"name": "p1",
+						"type": "bytes"
+					},
+					{
+						"internalType": "bytes",
+						"name": "p2",
+						"type": "bytes"
+					},
+					{
+						"internalType": "bytes",
+						"name": "p3",
+						"type": "bytes"
+					},
+					{
+						"internalType": "bytes",
+						"name": "p4",
+						"type": "bytes"
+					}
+				],
+				"name": "EqualPairingCheck",
 				"outputs": [
 					{
 						"internalType": "bool",
@@ -196,6 +254,13 @@
 				],
 				"stateMutability": "view",
 				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "testt",
+				"outputs": [],
+				"stateMutability": "view",
+				"type": "function"
 			}
 		],
 		"devdoc": {
@@ -227,10 +292,10 @@
 	},
 	"sources": {
 		"Verfiy.sol": {
-			"keccak256": "0xb9d6a8c2972e5faa287121fdbcc9e9541d704b515c4799490053585af7f3f269",
+			"keccak256": "0xed66a7ca2d560ed8d3fcb6ce0477bb7f23f2d448b70c904616e48283da49e18e",
 			"urls": [
-				"bzz-raw://e990ad1e055ca05e9ade82b1ecc9bfc87bc601b5c148d9bc199fe4560f784006",
-				"dweb:/ipfs/QmeRSDt1WPvdncVrLGpJzM3fXAddqgi52Phk5cgMk6m8Mr"
+				"bzz-raw://cc5059230c19de914a5762e71360f6485cb1c0621978ba9c28c6314274b48629",
+				"dweb:/ipfs/QmdxVdNRaE675uHr1FwovGBiHc6tBUAP8Qsj4djiNZukHM"
 			]
 		}
 	},
