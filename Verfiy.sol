@@ -12,7 +12,7 @@ contract Verify {
         uint256 temp2=1;
         uint256 k=0;
         bytes memory ag1 = new bytes(L1*160);
-        bytes memory ag2 = new bytes((L2-2)*288);
+        bytes memory ag2 = new bytes((L2-3)*288);
         bytes memory ag3 = new bytes((L1-1)*160);
         bytes memory ag4 = new bytes((L2-2)*288);//长度还需要再考虑
         // Compute Part 1
@@ -21,7 +21,7 @@ contract Verify {
                 ag1[k]=g1s[i][j];
                 k++;
             }
-            bytes32 temp = bytes32(rho1);
+            bytes32 temp = bytes32(temp1);
             for(uint256 j=0;j<32;j++){
                 ag1[k]=temp[j];
             }
@@ -29,26 +29,60 @@ contract Verify {
         }
         bytes memory part1 = G1Muls(ag1);
         // Compute Part 2
-        // Compute Part 3
-        temp1=rho1;
-        for(uint256 i=0;i<=L1-1-1;i++){
-            for(uint256 j=0;j<128;j++){
-                ag1[k]=g1s[i][j];
+        temp2=rho2;
+        for(uint256 i=0;i<=2*L1-1-1;i++){
+            if(i==L1||i==L1-1){
+                temp2=temp2*rho1;
+                continue;
+            }
+            for(uint256 j=0;j<256;j++){
+                ag2[k]=g2s[i][j];
                 k++;
             }
-            bytes32 temp = bytes32(rho1);
+            bytes32 temp = bytes32(temp2);
             for(uint256 j=0;j<=32-1;j++){
-                ag1[k]=temp[j];
+                ag2[k]=temp[j];
+            }
+            temp2=temp2*rho2;
+        }
+        bytes memory part2 = G2Muls(ag2);
+        part2 = G2Add(part2,part2);
+        // Compute Part 3
+        temp1=rho1;
+        for(uint256 i=0;i<=L1-1;i++){
+        for(uint256 j=0;j<128;j++){
+                ag3[k]=g1s[i][j];
+                k++;
+            }
+            bytes32 temp = bytes32(temp1);
+            for(uint256 j=0;j<=32-1;j++){
+                ag3[k]=temp[j];
             }
             temp1=temp1*rho1;
         }
         bytes memory part3 = G1Muls(ag3);
         part3 = G1Add(part3,part3);
         // Compute Part 4
+        for(uint256 i=0;i<=2*L1-1;i++){
+            if(i==L1||i==L1-1){//排除第 L+1 项 和 L
+                temp2=temp2*rho1;
+                continue;
+            }
+            for(uint256 j=0;j<256;j++){
+                ag4[k]=g1s[i][j];
+                k++;
+            }
+            bytes32 temp = bytes32(temp2);
+            for(uint256 j=0;j<32;j++){
+                ag4[k]=temp[j];
+            }
+            temp2=temp2*rho2;
+        }
+         bytes memory part4 = G2Muls(ag1);
         // Pairing Check
     }
         // G1s Section
-    function G1Add(bytes calldata p1,bytes calldata p2)public view returns (bytes memory point){
+    function G1Add(bytes memory p1,bytes memory p2)public view returns (bytes memory point){
         bytes memory input = abi.encodePacked(p1, p2);
         (bool ok, bytes memory ret) = address(0x0b).staticcall(input);
         return ret;
@@ -63,7 +97,7 @@ contract Verify {
         return ret;
     }
     // G2s Section
-    function G2Add(bytes calldata p1,bytes calldata p2)public view returns (bytes memory point){
+    function G2Add(bytes memory p1,bytes memory p2)public view returns (bytes memory point){
         bytes memory input = abi.encodePacked(p1, p2);
         (bool ok, bytes memory ret) = address(0x0d).staticcall(input);
         return ret;
