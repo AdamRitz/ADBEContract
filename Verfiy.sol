@@ -9,10 +9,12 @@ contract Verify {
         hex"0000000000000000000000000000000017f1d3a73197d7942695638c4fa9ac0fc3688c4f9774b905a14e3a3f171bac586c55e83ff97a1aeffb3af00adb22c6bb0000000000000000000000000000000008b3f481e3aaa0f1a09e30ed741d8ae4fcf5e095d5d00af600db18cb2c04b3edd03cc744a2888ae40caa232946c5e7e1";
     bytes constant g2 =
         hex"00000000000000000000000000000000024aa2b2f08f0a91260805272dc51051c6e47ad4fa403b02b4510b647ae3d1770bac0326a805bbefd48056c8c121bdb80000000000000000000000000000000013e02b6052719f607dacd3a088274f65596bd0d09920b61ab5da61bbdc7f5049334cf11213945d57e5ac7d055d042b7e000000000000000000000000000000000ce5d527727d6e118cc9cdc6da2e351aadfd9baa8cbdd3a76d429a695160d12c923ac9cc3baca289e193548608b82801000000000000000000000000000000000606c4a02ea734cc32acd2b02bc28b99cb3e287e85a763af267492ab572e99ab3f370d275cec1da1aaa9075ff05f79be";
+    bytes public lastg=g1;
     
-    function Check3(
+    function Check(
         bytes[] calldata g1s,
-        bytes[] calldata g2s
+        bytes[] calldata g2s,
+        bytes calldata gtau
     ) public  returns (bool) {
         uint256 L1 = g1s.length;
         uint256 L2 = g2s.length;
@@ -33,15 +35,10 @@ contract Verify {
         k = 0;
         for (uint256 i = 0; i <= L1 - 1; i++) {
             require(g1s[i].length == 128, "bad G1 len");
-            for (uint256 j = 0; j < 128; j++) {
-                ag1[k] = g1s[i][j];
-                k++;
-            }
-            bytes32 temp = bytes32(temp1);
-            for (uint256 j = 0; j < 32; j++) {
-                ag1[k] = temp[j];
-                k++;
-            }
+            CopyBytes(g1s[i], 0, ag1, k, 128);
+            k+=128;
+            CopyUint(temp1, ag1, k);
+            k+=32;
             temp1 = mulmod(temp1, rho1, q);
         }
         bytes memory part1 = G1Muls(ag1);
@@ -56,15 +53,10 @@ contract Verify {
                 temp2 = mulmod(temp2, rho2, q);
                 continue;
             }
-            for (uint256 j = 0; j < 256; j++) {
-                ag2[k] = g2s[i][j];
-                k++;
-            }
-            bytes32 temp = bytes32(temp2);
-            for (uint256 j = 0; j <= 32 - 1; j++) {
-                ag2[k] = temp[j];
-                k++;
-            }
+            CopyBytes(g2s[i], 0, ag2, k, 256);
+            k+=256;
+            CopyUint(temp2, ag2, k);
+            k+=32;
             temp2 = mulmod(temp2, rho2, q);
         }
         bytes memory part2 = G2Muls(ag2);
@@ -75,15 +67,10 @@ contract Verify {
         k = 0;
         temp1 = rho1;
         for (uint256 i = 0; i <= L1 - 1 - 1; i++) {
-            for (uint256 j = 0; j < 128; j++) {
-                ag3[k] = g1s[i][j];
-                k++;
-            }
-            bytes32 temp = bytes32(temp1);
-            for (uint256 j = 0; j <= 32 - 1; j++) {
-                ag3[k] = temp[j];
-                k++;
-            }
+            CopyBytes(g1s[i],0,ag3,k,128);
+            k+=128;
+            CopyUint(temp1,ag3 , k);
+            k+=32;
             temp1 = mulmod(temp1, rho1, q);
         }
         bytes memory part3 = G1Muls(ag3);
@@ -100,22 +87,21 @@ contract Verify {
                 temp2 = mulmod(temp2, rho2, q);
                 continue;
             }
-            for (uint256 j = 0; j < 256; j++) {
-                ag4[k] = g2s[i][j];
-                k++;
-            }
-            bytes32 temp = bytes32(temp2);
-            for (uint256 j = 0; j < 32; j++) {
-                ag4[k] = temp[j];
-                k++;
-            }
+            CopyBytes(g2s[i],0,ag4,k,256);
+            k+=256;
+            CopyUint(temp2, ag4, k);
+            k+=32;
             temp2 = mulmod(temp2, rho2, q);
         }
         bytes memory part4 = G2Muls(ag4);
-
-        return EqualPairingCheck(part1, part2, part3, part4);
+    require(EqualPairingCheck(g1s[0],g2,lastg , gtau),"Check1 Failed");
+    require(EqualPairingCheck(part1, part2, part3, part4),"Check2-1 Failed");
+    require(EqualPairingCheck(g1,g2s[L1+1],g1s[1],g2s[L1-1]),"Check2-2 Failed");
+    require(ZeroCheck(g1s[0])!=true,"Check3 Failed");
+    lastg=g1s[0];
+    return true;
     }
-    function Check2(bytes[] calldata g1s, bytes[] calldata g2s) external  returns (bool) {
+    function CheckTest(bytes[] calldata g1s, bytes[] calldata g2s) external  returns (bool) {
     uint256 L1 = g1s.length;
     uint256 L2 = g2s.length;
     require(L1 > 0);
@@ -253,10 +239,19 @@ function _cdCopy(
         calldatacopy(add(add(dst, 32), dstOff), add(src.offset, srcOff), len)
     }
 }
-
+function CopyBytes(bytes calldata from,uint256 fromOff,bytes memory to,uint256 toOff,uint256 len) internal pure{
+    assembly{
+        calldatacopy(add(add(to,32),toOff),add(from.offset,fromOff),len)
+    }
+}
 function _mstoreScalar(bytes memory dst, uint256 dstOff, uint256 x) internal pure {
     assembly {
         mstore(add(add(dst, 32), dstOff), x)
+    }
+}
+function CopyUint(uint256 i,bytes memory to,uint256 toOff)internal pure{
+    assembly {
+        mstore(add(add(to,32),toOff),i)
     }
 }
     //
@@ -325,9 +320,20 @@ function _mstoreScalar(bytes memory dst, uint256 dstOff, uint256 x) internal pur
         (bool ok, bytes memory ret) = address(0x0f).staticcall(input);
         return uint256(bytes32(ret)) == 1;
     }
-    function testt() public view {
-        bytes memory a=new bytes(200);
-        bytes memory b=new bytes(200);
-        bytes memory c=abi.encodePacked(a,b);
+
+
+    function ZeroCheck(bytes calldata x)public pure returns (bool ok){
+        uint256 acc=0;
+        assembly{
+            let p:=x.offset
+            acc:= or(acc,calldataload(p))
+            acc:= or(acc,calldataload(add(p,32)))
+            acc:= or(acc,calldataload(add(p,64)))
+            acc:= or(acc,calldataload(add(p,96)))
+        }
+        return acc==0;
     }
+
+
+
 }
