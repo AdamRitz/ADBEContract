@@ -101,152 +101,109 @@ contract Verify {
     lastg=g1s[0];
     return true;
     }
-    function CheckTest(bytes[] calldata g1s, bytes[] calldata g2s) external  returns (bool) {
-    uint256 L1 = g1s.length;
-    uint256 L2 = g2s.length;
-    require(L1 > 0);
-    require(L1 * 2 == L2);
 
-    uint256 rho1 = uint256(keccak256(abi.encode(g1s, g2s, uint256(0)))) % q;
-    uint256 rho2 = uint256(keccak256(abi.encode(g1s, g2s, uint256(1)))) % q;
-
-    uint256 k;
-    uint256 temp1;
-    uint256 temp2;
-
-    // -------- Part 1 --------
-    bytes memory ag1 = new bytes(L1 * 160);
-    k = 0;
-    temp1 = 1;
-    for (uint256 i = 0; i < L1; ) {
-        bytes calldata p = g1s[i];
-        require(p.length == 128);
-
-        _cdCopy(p, 0, ag1, k, 128);
-        k += 128;
-
-        _mstoreScalar(ag1, k, temp1);
-        k += 32;
-
-        temp1 = mulmod(temp1, rho1, q);
-        unchecked { ++i; }
-    }
-    bytes memory part1 = G1Muls(ag1);
-
-    // -------- Part 2 --------
-    // i = 0..(2*L1-2), skip i==L1-1 and i==L1  => slices = 2*L1-3
-    uint256 slices2 = 2 * L1 - 3;
-    bytes memory ag2 = new bytes(slices2 * 288);
-
-    k = 0;
-    temp2 = rho2;
-    for (uint256 i = 0; i <= 2 * L1 - 2; ) {
-        if (i == L1 - 1 || i == L1) {
-            temp2 = mulmod(temp2, rho2, q);
-            unchecked { ++i; }
-            continue;
+    function CheckTest(bytes[] calldata g1s,
+        bytes[] calldata g2s,
+        bytes calldata pi1,
+        uint256 pi2
+    ) public  returns (bool) {
+        uint256 L1 = g1s.length;
+        uint256 L2 = g2s.length;
+        require(L1 * 2 == L2);
+        // Compute 4 Part
+        uint256 rho1 = uint256(keccak256(abi.encode(g1s, g2s, 0))) % q;
+        uint256 rho2 = uint256(keccak256(abi.encode(g1s, g2s, 1))) % q;
+        uint256 temp1 = 1;
+        uint256 temp2 = 1;
+        uint256 k = 0;
+        bytes memory ag1 = new bytes(L1 * 160);
+        bytes memory ag2 = new bytes((L2 - 3) * 288);
+        bytes memory ag3 = new bytes((L1 - 1) * 160);
+        bytes memory ag4 = new bytes((L2 - 2) * 288); //长度还需要再考虑
+        //
+        // Compute Part 1
+        //
+        k = 0;
+        for (uint256 i = 0; i <= L1 - 1; i++) {
+            require(g1s[i].length == 128, "bad G1 len");
+            CopyBytes(g1s[i], 0, ag1, k, 128);
+            k+=128;
+            CopyUint(temp1, ag1, k);
+            k+=32;
+            temp1 = mulmod(temp1, rho1, q);
         }
-
-        bytes calldata p = g2s[i];
-        require(p.length == 256);
-
-        _cdCopy(p, 0, ag2, k, 256);
-        k += 256;
-
-        _mstoreScalar(ag2, k, temp2);
-        k += 32;
-
-        temp2 = mulmod(temp2, rho2, q);
-        unchecked { ++i; }
-    }
-    bytes memory part2 = G2Muls(ag2);
-    part2 = G2Add(g2, part2);
-
-    // -------- Part 3 --------
-    require(L1 >= 2);
-    bytes memory ag3 = new bytes((L1 - 1) * 160);
-
-    k = 0;
-    temp1 = rho1;
-    for (uint256 i = 0; i < L1 - 1; ) {
-        bytes calldata p = g1s[i];
-        require(p.length == 128);
-
-        _cdCopy(p, 0, ag3, k, 128);
-        k += 128;
-
-        _mstoreScalar(ag3, k, temp1);
-        k += 32;
-
-        temp1 = mulmod(temp1, rho1, q);
-        unchecked { ++i; }
-    }
-    bytes memory part3 = G1Muls(ag3);
-    part3 = G1Add(g1, part3);
-
-    // -------- Part 4 --------
-    // i = 0..(2*L1-1), skip i==L1 and i==L1+1 => slices = 2*L1-2
-    uint256 slices4 = 2 * L1 - 2;
-    bytes memory ag4 = new bytes(slices4 * 288);
-
-    k = 0;
-    temp2 = 1;
-    for (uint256 i = 0; i <= 2 * L1 - 1; ) {
-        if (i == L1 || i == L1 + 1) {
+        bytes memory part1 = G1Muls(ag1);
+        //
+        // Compute Part 2
+        //
+        k = 0;
+        temp2 = rho2;
+        for (uint256 i = 0; i <= 2 * L1 - 1 - 1; i++) {
+            // 实际是数组里面的 L+1 和 L
+            if (i == L1 - 1 || i == L1) {
+                temp2 = mulmod(temp2, rho2, q);
+                continue;
+            }
+            CopyBytes(g2s[i], 0, ag2, k, 256);
+            k+=256;
+            CopyUint(temp2, ag2, k);
+            k+=32;
             temp2 = mulmod(temp2, rho2, q);
-            unchecked { ++i; }
-            continue;
         }
+        bytes memory part2 = G2Muls(ag2);
+        part2 = G2Add(g2, part2);
+        //
+        // Compute Part 3
+        //
+        k = 0;
+        temp1 = rho1;
+        for (uint256 i = 0; i <= L1 - 1 - 1; i++) {
+            CopyBytes(g1s[i],0,ag3,k,128);
+            k+=128;
+            CopyUint(temp1,ag3 , k);
+            k+=32;
+            temp1 = mulmod(temp1, rho1, q);
+        }
+        bytes memory part3 = G1Muls(ag3);
+        part3 = G1Add(g1, part3);
+        //
+        // Compute Part 4
+        //
 
-        bytes calldata p = g2s[i];
-        require(p.length == 256);
-
-        _cdCopy(p, 0, ag4, k, 256);
-        k += 256;
-
-        _mstoreScalar(ag4, k, temp2);
-        k += 32;
-
-        temp2 = mulmod(temp2, rho2, q);
-        unchecked { ++i; }
+        k = 0;
+        temp2 = 1;
+        for (uint256 i = 0; i <= 2 * L1 - 1; i++) {
+            if (i == L1 || i == L1 + 1) {
+                //排除第 L+1  和 L+2
+                temp2 = mulmod(temp2, rho2, q);
+                continue;
+            }
+            CopyBytes(g2s[i],0,ag4,k,256);
+            k+=256;
+            CopyUint(temp2, ag4, k);
+            k+=32;
+            temp2 = mulmod(temp2, rho2, q);
+        }
+        bytes memory part4 = G2Muls(ag4);
+    //require(EqualPairingCheck(g1s[0],g2,lastg , gtau),"Check1 Failed");
+    require(EqualPairingCheck(part1, part2, part3, part4),"Check2-1 Failed");
+    require(EqualPairingCheck(g1,g2s[L1+1],g1s[1],g2s[L1-1]),"Check2-2 Failed");
+    require(ZeroCheck(g1s[0])!=true,"Check3 Failed");
+    lastg=g1s[0];
+    uint256 w=uint256(keccak256(abi.encode(g1s,g2s)))%q;
+    bytes memory p1=G1Mul(g1s[0], w);
+    bytes memory p2=G1Add(p1, pi1);
+        for (uint256 i = 0; i < 128; i++) {
+        if (p2[i] != pi1[i]) return false;
     }
-    bytes memory part4 = G2Muls(ag4);
-    require(EqualPairingCheck(part1, part2, part3, part4),"Check2 Failed");
-    require(EqualPairingCheck(g1,g2s[L1+1],g1s[1],g2s[L1-1]),"Check3 Failed");
     return true;
 }
  bool public  w=false;
 // ---- helpers: 只做 copy 和写标量，不改你 precompile 包装函数 ----
-function why1(bytes[] calldata g1s,bytes[] calldata g2s) public  {
-    uint256 L1=g1s.length;
-    w=EqualPairingCheck(g1,g2s[L1+1],g1s[1],g2s[L1-1]);
-}
-function why2(bytes[] calldata g1s,bytes[] calldata g2s) public  {
 
-    uint256 t=uint256(keccak256(abi.encode(g1s,g2s)))%q;
-    if (t!=0){
-        w=false;
-    }
-}
-function _cdCopy(
-    bytes calldata src,
-    uint256 srcOff,
-    bytes memory dst,
-    uint256 dstOff,
-    uint256 len
-) internal pure {
-    assembly {
-        calldatacopy(add(add(dst, 32), dstOff), add(src.offset, srcOff), len)
-    }
-}
 function CopyBytes(bytes calldata from,uint256 fromOff,bytes memory to,uint256 toOff,uint256 len) internal pure{
     assembly{
         calldatacopy(add(add(to,32),toOff),add(from.offset,fromOff),len)
-    }
-}
-function _mstoreScalar(bytes memory dst, uint256 dstOff, uint256 x) internal pure {
-    assembly {
-        mstore(add(add(dst, 32), dstOff), x)
     }
 }
 function CopyUint(uint256 i,bytes memory to,uint256 toOff)internal pure{

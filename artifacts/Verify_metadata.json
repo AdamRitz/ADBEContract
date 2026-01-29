@@ -45,6 +45,16 @@
 						"internalType": "bytes[]",
 						"name": "g2s",
 						"type": "bytes[]"
+					},
+					{
+						"internalType": "bytes",
+						"name": "pi1",
+						"type": "bytes"
+					},
+					{
+						"internalType": "uint256",
+						"name": "pi2",
+						"type": "uint256"
 					}
 				],
 				"name": "CheckTest",
@@ -304,42 +314,6 @@
 				],
 				"stateMutability": "view",
 				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "bytes[]",
-						"name": "g1s",
-						"type": "bytes[]"
-					},
-					{
-						"internalType": "bytes[]",
-						"name": "g2s",
-						"type": "bytes[]"
-					}
-				],
-				"name": "why1",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "bytes[]",
-						"name": "g1s",
-						"type": "bytes[]"
-					},
-					{
-						"internalType": "bytes[]",
-						"name": "g2s",
-						"type": "bytes[]"
-					}
-				],
-				"name": "why2",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
 			}
 		],
 		"devdoc": {
@@ -371,10 +345,10 @@
 	},
 	"sources": {
 		"Verfiy.sol": {
-			"keccak256": "0x0ee2fc0ced9144e1bdbd6ceee0287cc96e3aaa68ec3ea4b196ba542932cd9414",
+			"keccak256": "0xe714cff18a0c176dd337b2507ed813f3826478e4e04cdb6888d0b1cf5617d67d",
 			"urls": [
-				"bzz-raw://c6777bb221e59c64f9f7dcead7fff400f9181083254df9187f99866ca318d727",
-				"dweb:/ipfs/QmVwDCbovjCKWDLgShyicJCMiXugnpe6Lr5sN4cfJkAAa4"
+				"bzz-raw://6dcc5593ae2076f635d7ad5baf639395162b51085e8dbc4b2790e5be6ca7633f",
+				"dweb:/ipfs/QmaHSBKXufvofyEzMXJM8SZDqyi5sLdHAYogLjrf33njTN"
 			]
 		}
 	},
