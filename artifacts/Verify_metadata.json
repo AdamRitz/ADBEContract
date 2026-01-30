@@ -37,6 +37,35 @@
 			{
 				"inputs": [
 					{
+						"internalType": "bytes",
+						"name": "g1s",
+						"type": "bytes"
+					},
+					{
+						"internalType": "bytes[]",
+						"name": "g2s",
+						"type": "bytes[]"
+					},
+					{
+						"internalType": "uint256",
+						"name": "index",
+						"type": "uint256"
+					}
+				],
+				"name": "CheckKey",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
 						"internalType": "bytes[]",
 						"name": "g1s",
 						"type": "bytes[]"
@@ -273,6 +302,24 @@
 			{
 				"inputs": [
 					{
+						"internalType": "bytes[]",
+						"name": "g1s",
+						"type": "bytes[]"
+					},
+					{
+						"internalType": "bytes[]",
+						"name": "g2s",
+						"type": "bytes[]"
+					}
+				],
+				"name": "SetPP",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
 						"internalType": "bytes",
 						"name": "x",
 						"type": "bytes"
@@ -292,6 +339,44 @@
 			{
 				"inputs": [],
 				"name": "lastg",
+				"outputs": [
+					{
+						"internalType": "bytes",
+						"name": "",
+						"type": "bytes"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"name": "ppg1s",
+				"outputs": [
+					{
+						"internalType": "bytes",
+						"name": "",
+						"type": "bytes"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"name": "ppg2s",
 				"outputs": [
 					{
 						"internalType": "bytes",
@@ -345,10 +430,10 @@
 	},
 	"sources": {
 		"Verfiy.sol": {
-			"keccak256": "0xe714cff18a0c176dd337b2507ed813f3826478e4e04cdb6888d0b1cf5617d67d",
+			"keccak256": "0xd79afbfdf4fc09dcb203892b1211d838c41bb05921cb9f64b97155a3bead8c9a",
 			"urls": [
-				"bzz-raw://6dcc5593ae2076f635d7ad5baf639395162b51085e8dbc4b2790e5be6ca7633f",
-				"dweb:/ipfs/QmaHSBKXufvofyEzMXJM8SZDqyi5sLdHAYogLjrf33njTN"
+				"bzz-raw://1630a88e0adf74a1c509d1286008dfd4819ce95a602aecaab6fce0d91b9c12eb",
+				"dweb:/ipfs/Qma6vdZpdJDhBUos4aQPQk3pAn6xN1YmyKGuwQ84pLDjrj"
 			]
 		}
 	},

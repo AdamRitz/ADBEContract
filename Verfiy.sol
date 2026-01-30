@@ -198,8 +198,83 @@ contract Verify {
     }
     return true;
 }
- bool public  w=false;
+bool public  w=false;
+bytes[] public ppg1s;
+bytes[] public ppg2s;
 // ---- helpers: 只做 copy 和写标量，不改你 precompile 包装函数 ----
+function SetPP(bytes[] calldata g1s,bytes[] calldata g2s)public {
+    for(uint256 i=0;i<=g1s.length-1;i++){
+        ppg1s.push(g1s[i]);
+    }
+    for(uint256 i=0;i<=g2s.length-1;i++){
+        ppg2s.push(g2s[i]);
+    }
+}
+function CheckKey(bytes calldata g1s,bytes[] calldata g2s,uint256 index)public  returns(bool){
+        uint256 L = g2s.length;
+        uint256 rho = uint256(keccak256(abi.encode(g1s, g2s))) % q;
+        bytes memory left = new bytes(288*(L-1));
+        bytes memory right = new bytes(288*(L-1));
+        uint256 temp1 = rho;
+        uint256 temp2 = rho;
+        uint256 k = 0;
+        // Compute Left Part
+        for(uint256 i=0;i<=L-1;i++){
+            if(i==L-index){ //原本是    L+1-index，但是索引需要减去 1
+                temp1=mulmod(temp1, rho, q);
+                continue;
+                
+            }
+            CopyBytes(g2s[i], 0, left, k, 256);
+            k+=256;
+            CopyUint(temp1, left, k);
+            k+=32;
+            temp1=mulmod(temp1, rho, q);
+        }
+        // Compute Right Part
+        k=0;
+        for(uint256 i=0;i<=L-1;i++){
+            if(i==L-index){
+                temp2=mulmod(temp2, rho, q);
+                continue;
+            }
+            bytes memory p = ppg2s[i];
+            CopyStorageBytes256(ppg2s[i], right, k); 
+
+            k+=256;
+            CopyUint(temp2, right, k);
+            k+=32;
+            temp2=mulmod(temp2, rho, q);
+        }
+    bytes memory leftAgg  = G2Muls(left);   // 256 bytes
+    bytes memory rightAgg = G2Muls(right);  // 256 bytes
+    require(EqualPairingCheck(g1, leftAgg, g1s, rightAgg),"CheckKey Fail");
+    return true;
+}
+function CopyStorageBytes256(bytes storage s, bytes memory to, uint256 toOff) internal view {
+    assembly {
+        let slot := s.slot
+        let v := sload(slot)
+
+        // require long-form + len==256
+        if iszero(and(v, 1)) { revert(0, 0) }
+        if iszero(eq(shr(1, sub(v, 1)), 256)) { revert(0, 0) }
+
+        mstore(0x00, slot)
+        let base := keccak256(0x00, 0x20)
+        let dst := add(add(to, 32), toOff)
+
+        // 8 words
+        mstore(dst,             sload(base))
+        mstore(add(dst, 32),    sload(add(base, 1)))
+        mstore(add(dst, 64),    sload(add(base, 2)))
+        mstore(add(dst, 96),    sload(add(base, 3)))
+        mstore(add(dst, 128),   sload(add(base, 4)))
+        mstore(add(dst, 160),   sload(add(base, 5)))
+        mstore(add(dst, 192),   sload(add(base, 6)))
+        mstore(add(dst, 224),   sload(add(base, 7)))
+    }
+}
 
 function CopyBytes(bytes calldata from,uint256 fromOff,bytes memory to,uint256 toOff,uint256 len) internal pure{
     assembly{
