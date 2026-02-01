@@ -66,6 +66,35 @@
 			{
 				"inputs": [
 					{
+						"internalType": "bytes",
+						"name": "g1s",
+						"type": "bytes"
+					},
+					{
+						"internalType": "bytes[]",
+						"name": "g2s",
+						"type": "bytes[]"
+					},
+					{
+						"internalType": "uint256",
+						"name": "index",
+						"type": "uint256"
+					}
+				],
+				"name": "CheckKeyDBE",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
 						"internalType": "bytes[]",
 						"name": "g1s",
 						"type": "bytes[]"
@@ -430,10 +459,10 @@
 	},
 	"sources": {
 		"Verfiy.sol": {
-			"keccak256": "0xd79afbfdf4fc09dcb203892b1211d838c41bb05921cb9f64b97155a3bead8c9a",
+			"keccak256": "0x2bd97ad644073f70d3b82499cf90a5e99fbaf6841a5c5bfcc5d255c3c89640a0",
 			"urls": [
-				"bzz-raw://1630a88e0adf74a1c509d1286008dfd4819ce95a602aecaab6fce0d91b9c12eb",
-				"dweb:/ipfs/Qma6vdZpdJDhBUos4aQPQk3pAn6xN1YmyKGuwQ84pLDjrj"
+				"bzz-raw://26c51c9cb0831f74024b08e8b8a25b446b7c6dcb1b140b61780a35966d4db1fd",
+				"dweb:/ipfs/QmaZwvnQ4GMBftpLYrBUTSXnnzqzVS5rXCUUotJ6RFZMj6"
 			]
 		}
 	},

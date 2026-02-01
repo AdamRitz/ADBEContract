@@ -251,6 +251,20 @@ function CheckKey(bytes calldata g1s,bytes[] calldata g2s,uint256 index)public  
     require(EqualPairingCheck(g1, leftAgg, g1s, rightAgg),"CheckKey Fail");
     return true;
 }
+function CheckKeyDBE(bytes calldata g1s,bytes[] calldata g2s,uint256 index)public  returns (bool){
+    uint256 L=g2s.length;
+    for (uint256 i=0;i<=L-2;i++){
+        if(i==L-index){
+            continue;
+        }
+        require(EqualPairingCheck(ppg1s[L-i-1-1], g2s[i], g1s, ppg2s[L-1]),"KeyCheck1 Failed");
+    }
+    if(index==1){
+        return true;
+    }
+   require(EqualPairingCheck(g1, g2s[L-1], g1s, ppg2s[L-1]),"KeyCheck2 Failed" );
+    return true;
+}
 function CopyStorageBytes256(bytes storage s, bytes memory to, uint256 toOff) internal view {
     assembly {
         let slot := s.slot
